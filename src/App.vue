@@ -1,53 +1,48 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import GreetingsHeader from "./components/GreetingsHeader.vue";
+import TheEvents from "./components/TheEvents.vue";
 </script>
 
 <template>
   <header>
     <img
-      alt="Vue logo"
+      alt="ELYON icon"
       class="logo"
-      src="./assets/logo.svg"
+      src="./assets/ELYON.png"
       width="125"
       height="125"
     />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <GreetingsHeader msg="Elyon Timer" />
     </div>
   </header>
 
   <main>
-    <TheWelcome />
+    <TheEvents />
   </main>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
+  display: flex;
+  place-items: center;
+  padding-right: calc(var(--section-gap) / 2);
+  justify-content: center;
+}
+header .wrapper {
+  display: flex;
+  place-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .logo {
   display: block;
-  margin: 0 auto 2rem;
+  margin: 0 2rem 0 0;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+main {
+  width: 1000px;
 }
 </style>

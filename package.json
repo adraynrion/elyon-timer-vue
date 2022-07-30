@@ -8,7 +8,9 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "vue": "^3.2.37"
+    "luxon": "^3.0.1",
+    "vue": "^3.2.37",
+    "vue-slider-component": "^4.1.0-beta.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
