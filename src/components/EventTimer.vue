@@ -38,16 +38,6 @@ export default {
       type: Number,
       required: true,
     },
-
-    alertThreshold: {
-      type: Number,
-      default: 5,
-    },
-
-    warningThreshold: {
-      type: Number,
-      default: 10,
-    },
   },
 
   computed: {
@@ -99,6 +89,14 @@ export default {
           threshold: this.alertThreshold,
         },
       };
+    },
+
+    warningThreshold() {
+      return Math.floor(this.timeLimit / 4);
+    },
+
+    alertThreshold() {
+      return Math.floor(this.timeLimit / 8);
     },
 
     remainingPathColor() {
