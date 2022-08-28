@@ -1,86 +1,63 @@
 <template>
-  <div class="item">
-    <i>
-      <slot name="icon"></slot>
-    </i>
-    <div class="details">
-      <h3>
-        <slot name="heading"></slot>
-      </h3>
-      <slot></slot>
-    </div>
-  </div>
+  <EventTimer :time-left="timeLeft" :time-limit="timeLimit" />
 </template>
 
-<style scoped>
-.item {
-  margin-top: 2rem;
-  display: flex;
-}
+<script>
+import EventTimer from "./EventTimer.vue";
 
-.details {
-  flex: 1;
-  margin-left: 1rem;
-}
+export default {
+  components: {
+    EventTimer,
+  },
 
-i {
-  display: flex;
-  place-items: center;
-  place-content: center;
-  width: 32px;
-  height: 32px;
+  props: {
+    modelValue: {
+      type: Number,
+      required: true,
+    },
 
-  color: var(--color-text);
-}
+    timeLimit: {
+      type: Number,
+      required: true,
+    },
+  },
 
-h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 0.4rem;
-  color: var(--color-heading);
-}
+  data() {
+    return {
+      timerInterval: null,
+    };
+  },
 
-@media (min-width: 1024px) {
-  .item {
-    margin-top: 0;
-    padding: 0.4rem 0 1rem calc(var(--section-gap) / 2);
-  }
+  computed: {
+    timeLeft() {
+      return this.timeLimit - this.timePassed;
+    },
 
-  i {
-    top: calc(50% - 25px);
-    left: -26px;
-    position: absolute;
-    border: 1px solid var(--color-border);
-    background: var(--color-background);
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
-  }
+    timePassed: {
+      get() {
+        return this.modelValue;
+      },
+      set(v) {
+        if (v > this.timeLimit) v = this.timeLimit;
+        this.$emit("update:modelValue", v);
+      },
+    },
+  },
 
-  .item:before {
-    content: " ";
-    border-left: 1px solid var(--color-border);
-    position: absolute;
-    left: 0;
-    bottom: calc(50% + 25px);
-    height: calc(50% - 25px);
-  }
+  mounted() {
+    this.timerInterval = setInterval(() => {
+      this.startTimer();
+    }, 1000);
+  },
 
-  .item:after {
-    content: " ";
-    border-left: 1px solid var(--color-border);
-    position: absolute;
-    left: 0;
-    top: calc(50% + 25px);
-    height: calc(50% - 25px);
-  }
+  beforeUnmount() {
+    clearInterval(this.timerInterval);
+  },
 
-  .item:first-of-type:before {
-    display: none;
-  }
-
-  .item:last-of-type:after {
-    display: none;
-  }
-}
-</style>
+  methods: {
+    startTimer() {
+      this.timePassed++;
+    },
+  },
+};
+</script>
