@@ -103,8 +103,8 @@ export default {
     getLocalizationTime(hStart, mStart, hEnd, mEnd) {
       const dt = DateTime.now()
         .startOf("day")
-        .setZone("Europe/Paris")
-        .setLocale("en");
+        .setZone(process.env.CURRENT_ZONE)
+        .setLocale(process.env.CURRENT_LOCALE);
       const dtStart = dt
         .plus({ hours: hStart, minutes: mStart })
         .toLocaleString(DateTime.TIME_SIMPLE);
