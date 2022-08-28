@@ -103,8 +103,8 @@ export default {
     getLocalizationTime(hStart, mStart, hEnd, mEnd) {
       const dt = DateTime.now()
         .startOf("day")
-        .setZone(process.env.CURRENT_ZONE)
-        .setLocale(process.env.CURRENT_LOCALE);
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
       const dtStart = dt
         .plus({ hours: hStart, minutes: mStart })
         .toLocaleString(DateTime.TIME_SIMPLE);

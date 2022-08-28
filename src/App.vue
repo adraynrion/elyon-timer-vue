@@ -40,8 +40,8 @@ export default {
   data() {
     return {
       isoDateTime: DateTime.now()
-        .setZone(process.env.CURRENT_ZONE)
-        .setLocale(process.env.CURRENT_LOCALE),
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
     };
   },
 
@@ -72,8 +72,8 @@ export default {
   methods: {
     updateIsoDateTime() {
       this.isoDateTime = DateTime.now()
-        .setZone(process.env.CURRENT_ZONE)
-        .setLocale(process.env.CURRENT_LOCALE);
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
     },
   },
 };
