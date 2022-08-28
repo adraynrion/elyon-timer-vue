@@ -5,14 +5,15 @@
       :key="event.order"
       v-model="event.passed"
       :time-limit="event.duration"
-      :title="event.label"
+      :title="event.timedLabel"
+      :weekday="isoDateTime.weekday"
     />
   </div>
 </template>
 
 <script>
 import EventItem from "./EventItem.vue";
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 
 export default {
   components: {
@@ -20,18 +21,14 @@ export default {
   },
 
   props: {
-    isoTimestamp: {
-      type: Number,
+    isoDateTime: {
+      type: Object,
       required: true,
     },
   },
 
   data() {
     return {
-      isoDateTime: DateTime.now()
-        .setZone(import.meta.env.VITE_CURRENT_ZONE)
-        .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
-
       monday: 0,
       tuesday: 0,
       wednesday: 0,
@@ -40,15 +37,24 @@ export default {
       saturday: 0,
       sunday: 0,
 
-      // TODO Set as computed
-      mondayEvents: [
+      mondayEvents: [],
+    };
+  },
+
+  computed: {
+    mondayEventsData() {
+      return [
         {
           startHours: 1,
           endHours: 1,
           startMinutes: 0,
-          endMinutes: 1,
-          passed: "daily",
-          duration: 86400, // input in seconds
+          endMinutes: 0,
+          passed: this.timePassed(
+            this.isoDateTime,
+            this.isoDateTime.startOf("day"),
+            this.timeDuration({ hours: 1 })
+          ),
+          duration: this.timeDuration({ days: 1 }),
           label: "Daily reset",
         },
         {
@@ -56,8 +62,12 @@ export default {
           endHours: 4,
           startMinutes: 30,
           endMinutes: 0,
-          passed: 0,
-          duration: 1800, // input in seconds
+          passed: this.timePassed(
+            this.isoDateTime,
+            this.isoDateTime.startOf("day"),
+            this.timeDuration({ hours: 3, minutes: 0 }) // start - "duration"
+          ),
+          duration: this.timeDuration({ minutes: 30 }),
           label: "Pirate ships",
         },
         {
@@ -65,8 +75,12 @@ export default {
           endHours: 14,
           startMinutes: 30,
           endMinutes: 0,
-          passed: 0,
-          duration: 1800, // input in seconds
+          passed: this.timePassed(
+            this.isoDateTime,
+            this.isoDateTime.startOf("day"),
+            this.timeDuration({ hours: 13, minutes: 0 }) // start - "duration"
+          ),
+          duration: this.timeDuration({ minutes: 30 }),
           label: "Pirate ships",
         },
         {
@@ -74,8 +88,12 @@ export default {
           endHours: 18,
           startMinutes: 30,
           endMinutes: 0,
-          passed: 0,
-          duration: 1800, // input in seconds
+          passed: this.timePassed(
+            this.isoDateTime,
+            this.isoDateTime.startOf("day"),
+            this.timeDuration({ hours: 17, minutes: 0 }) // start - "duration"
+          ),
+          duration: this.timeDuration({ minutes: 30 }),
           label: "Pirate ships",
         },
         {
@@ -83,26 +101,29 @@ export default {
           endHours: 20,
           startMinutes: 10,
           endMinutes: 50,
-          passed: 0,
-          duration: 2400, // input in seconds
+          passed: this.timePassed(
+            this.isoDateTime,
+            this.isoDateTime.startOf("day"),
+            this.timeDuration({ hours: 19, minutes: 30 }) // start - "duration"
+          ),
+          duration: this.timeDuration({ minutes: 40 }),
           label: "RvR",
         },
-      ],
-    };
-  },
+      ];
+    },
 
-  computed: {
     mondayEventsOrdered() {
       let order = 0;
       return this.mondayEvents.map((e) => {
         e.order = order++;
+
         e.timedLabel = `${e.label} ${this.getLocalizationTime(
           e.startHours,
           e.startMinutes,
           e.endHours,
           e.endMinutes
         )}`;
-        if (e.passed === "daily") e.passed = this.dailyTimePassed;
+
         return e;
       });
     },
@@ -113,12 +134,10 @@ export default {
         .plus({ hours: 1, days: 1 })
         .toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS);
     },
+  },
 
-    dailyTimePassed() {
-      return Math.floor(
-        this.isoDateTime.diff(this.isoDateTime.startOf("day")).as("seconds")
-      );
-    },
+  mounted() {
+    this.mondayEvents = this.mondayEventsData;
   },
 
   methods: {
@@ -132,6 +151,14 @@ export default {
         .plus({ hours: hEnd, minutes: mEnd })
         .toLocaleString(DateTime.TIME_SIMPLE);
       return `${dtStart} - ${dtEnd}`;
+    },
+
+    timePassed(end, start, delta) {
+      return Math.floor(end.diff(start).as("seconds") - delta);
+    },
+
+    timeDuration(details) {
+      return Duration.fromObject(details).as("seconds");
     },
   },
 };

@@ -6,7 +6,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <g class="base-timer__circle">
-        <circle class="base-timer__path-elapsed" cx="50" cy="50" r="46.5" />
+        <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45" />
         <path
           :stroke-dasharray="circleDasharray"
           :class="remainingPathColor"
@@ -41,12 +41,25 @@ export default {
   },
 
   computed: {
+    notStarted() {
+      return this.timeLeft > this.timeLimit;
+    },
+
     formattedTimeLeft() {
+      let timeLeft = Math.abs(this.timeLeft);
+
+      let prefix = "";
+      if (this.notStarted) {
+        // If event not started, decount from minus 0
+        prefix = "-";
+        timeLeft -= this.timeLimit;
+      }
+
       // The largest round integer less than or equal to the result of time divided being by 60.
-      let minutes = Math.floor(this.timeLeft / 60);
+      let minutes = Math.floor(timeLeft / 60);
 
       // Seconds are the remainder of the time dividedby 60 (modulus operator)
-      let seconds = this.timeLeft % 60;
+      let seconds = timeLeft % 60;
 
       // If the value of seconds is less than 10, then display seconds with a leading zero
       if (seconds < 10) {
@@ -58,11 +71,11 @@ export default {
         const hours = Math.floor(minutes / 60);
         minutes = minutes % 60;
         // The output in hh:MM:SS format
-        return `${hours}:${minutes}:${seconds}`;
+        return `${prefix}${hours}:${minutes}:${seconds}`;
       }
 
       // The output in MM:SS format
-      return `${minutes}:${seconds}`;
+      return `${prefix}${minutes}:${seconds}`;
     },
 
     // Update the dasharray value as time passes, starting with 283
@@ -77,6 +90,9 @@ export default {
 
     colorCodes() {
       return {
+        waiting: {
+          color: "cyan",
+        },
         info: {
           color: "green",
         },
@@ -100,9 +116,11 @@ export default {
     },
 
     remainingPathColor() {
-      const { alert, warning, info } = this.colorCodes;
+      const { alert, warning, info, waiting } = this.colorCodes;
 
-      if (this.timeLeft <= alert.threshold) {
+      if (this.notStarted) {
+        return waiting.color;
+      } else if (this.timeLeft <= alert.threshold) {
         return alert.color;
       } else if (this.timeLeft <= warning.threshold) {
         return warning.color;
@@ -145,6 +163,10 @@ export default {
 
     &.red {
       color: red;
+    }
+
+    &.cyan {
+      color: cyan;
     }
   }
 

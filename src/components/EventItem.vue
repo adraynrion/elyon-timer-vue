@@ -1,5 +1,5 @@
 <template>
-  <div v-if="timeLeft > 0" class="event-content">
+  <div class="event-content">
     <EventTimer
       :time-left="timeLeft"
       :time-limit="timeLimit"
@@ -12,6 +12,7 @@
 
 <script>
 import EventTimer from "./EventTimer.vue";
+import { Duration } from "luxon";
 
 export default {
   components: {
@@ -19,6 +20,12 @@ export default {
   },
 
   props: {
+    // 1 = Monday / 7 = Sunday
+    weekday: {
+      type: Number,
+      required: true,
+    },
+
     modelValue: {
       type: Number,
       required: true,
@@ -51,15 +58,15 @@ export default {
         return this.modelValue;
       },
       set(v) {
-        if (v > this.timeLimit) this.stopTimer();
-        else this.$emit("update:modelValue", v);
+        // if (v > this.timeLimit) this.stopTimer();
+        this.$emit("update:modelValue", v);
       },
     },
   },
 
   mounted() {
     this.timerInterval = setInterval(() => {
-      this.startTimer();
+      this.runTimer();
     }, 1000);
   },
 
@@ -67,9 +74,22 @@ export default {
     this.stopTimer();
   },
 
+  watch: {
+    timePassed: {
+      handler(v) {
+        let delta = this.weekday % 7;
+        if (delta === 0) delta = 1;
+        if (v >= this.timeLimit && v < this.timeDuration({ days: delta })) {
+          this.timePassed -= this.timeDuration({ days: delta });
+        }
+      },
+    },
+  },
+
   methods: {
-    startTimer() {
-      this.timePassed++;
+    runTimer() {
+      if (this.timePassed > this.timeLimit) this.timePassed--;
+      else this.timePassed++;
     },
 
     stopTimer() {
@@ -79,6 +99,10 @@ export default {
 
     resetTimer() {
       this.timePassed = 0;
+    },
+
+    timeDuration(details) {
+      return Duration.fromObject(details).as("seconds");
     },
   },
 };

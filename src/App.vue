@@ -22,7 +22,7 @@
   </header>
 
   <main>
-    <TheEvents :iso-timestamp="isoTimestamp" />
+    <TheEvents :iso-date-time="isoDateTime" />
   </main>
 </template>
 
@@ -52,10 +52,6 @@ export default {
 
     isoTime() {
       return this.isoDateTime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
-    },
-
-    isoTimestamp() {
-      return this.isoDateTime.toMillis();
     },
   },
 
