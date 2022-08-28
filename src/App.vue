@@ -27,9 +27,6 @@
 </template>
 
 <script>
-const CURRENT_ZONE = "Europe/Paris";
-const CURRENT_LOCALE = "en";
-
 import GreetingsHeader from "./components/GreetingsHeader.vue";
 import TheEvents from "./components/TheEvents.vue";
 import { DateTime } from "luxon";
@@ -43,8 +40,8 @@ export default {
   data() {
     return {
       isoDateTime: DateTime.now()
-        .setZone(CURRENT_ZONE)
-        .setLocale(CURRENT_LOCALE),
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
     };
   },
 
@@ -75,8 +72,8 @@ export default {
   methods: {
     updateIsoDateTime() {
       this.isoDateTime = DateTime.now()
-        .setZone(CURRENT_ZONE)
-        .setLocale(CURRENT_LOCALE);
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
     },
   },
 };
