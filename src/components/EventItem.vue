@@ -1,5 +1,13 @@
 <template>
-  <EventTimer :time-left="timeLeft" :time-limit="timeLimit" />
+  <div v-if="timeLeft > 0" class="event-content">
+    <EventTimer
+      :time-left="timeLeft"
+      :time-limit="timeLimit"
+      class="event-timer"
+    />
+
+    <p class="event-title">{{ title }}</p>
+  </div>
 </template>
 
 <script>
@@ -20,6 +28,11 @@ export default {
       type: Number,
       required: true,
     },
+
+    title: {
+      type: String,
+      default: "",
+    },
   },
 
   data() {
@@ -38,8 +51,8 @@ export default {
         return this.modelValue;
       },
       set(v) {
-        if (v > this.timeLimit) v = this.timeLimit;
-        this.$emit("update:modelValue", v);
+        if (v > this.timeLimit) this.stopTimer();
+        else this.$emit("update:modelValue", v);
       },
     },
   },
@@ -51,13 +64,34 @@ export default {
   },
 
   beforeUnmount() {
-    clearInterval(this.timerInterval);
+    this.stopTimer();
   },
 
   methods: {
     startTimer() {
       this.timePassed++;
     },
+
+    stopTimer() {
+      clearInterval(this.timerInterval);
+      // this.resetTimer();
+    },
+
+    resetTimer() {
+      this.timePassed = 0;
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.event-content {
+  .event-timer {
+    margin: 0 auto;
+  }
+
+  .event-title {
+    text-align: center;
+  }
+}
+</style>
