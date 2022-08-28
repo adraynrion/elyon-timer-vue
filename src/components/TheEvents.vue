@@ -1,10 +1,13 @@
 <template>
-  <EventItem
-    v-for="event of mondayEventsOrdered"
-    :key="event.order"
-    v-model="event.passed"
-    :time-limit="event.duration"
-  />
+  <div>
+    <EventItem
+      v-for="event of mondayEventsOrdered"
+      :key="event.order"
+      v-model="event.passed"
+      :time-limit="event.duration"
+      :title="event.label"
+    />
+  </div>
 </template>
 
 <script>
@@ -25,6 +28,10 @@ export default {
 
   data() {
     return {
+      isoDateTime: DateTime.now()
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
+
       monday: 0,
       tuesday: 0,
       wednesday: 0,
@@ -33,14 +40,15 @@ export default {
       saturday: 0,
       sunday: 0,
 
+      // TODO Set as computed
       mondayEvents: [
         {
           startHours: 1,
           endHours: 1,
           startMinutes: 0,
           endMinutes: 1,
-          passed: 0,
-          duration: 60, // input in seconds
+          passed: "daily",
+          duration: 86400, // input in seconds
           label: "Daily reset",
         },
         {
@@ -94,21 +102,33 @@ export default {
           e.endHours,
           e.endMinutes
         )}`;
+        if (e.passed === "daily") e.passed = this.dailyTimePassed;
         return e;
       });
+    },
+
+    nextResetTime() {
+      return this.isoDateTime
+        .startOf("day")
+        .plus({ hours: 1, days: 1 })
+        .toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS);
+    },
+
+    dailyTimePassed() {
+      return Math.floor(
+        this.isoDateTime.diff(this.isoDateTime.startOf("day")).as("seconds")
+      );
     },
   },
 
   methods: {
     getLocalizationTime(hStart, mStart, hEnd, mEnd) {
-      const dt = DateTime.now()
+      const dtStart = this.isoDateTime
         .startOf("day")
-        .setZone(import.meta.env.VITE_CURRENT_ZONE)
-        .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
-      const dtStart = dt
         .plus({ hours: hStart, minutes: mStart })
         .toLocaleString(DateTime.TIME_SIMPLE);
-      const dtEnd = dt
+      const dtEnd = this.isoDateTime
+        .startOf("day")
         .plus({ hours: hEnd, minutes: mEnd })
         .toLocaleString(DateTime.TIME_SIMPLE);
       return `${dtStart} - ${dtEnd}`;
