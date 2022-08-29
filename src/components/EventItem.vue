@@ -1,12 +1,12 @@
 <template>
-  <div class="event-content">
+  <div v-if="lessThanOneDay" class="event-content">
     <EventTimer
       :time-left="timeLeft"
       :time-limit="timeLimit"
       class="event-timer"
     />
 
-    <p class="event-title">{{ title }}</p>
+    <p class="event-title green">{{ title }}</p>
   </div>
 </template>
 
@@ -20,12 +20,6 @@ export default {
   },
 
   props: {
-    // 1 = Monday / 7 = Sunday
-    weekday: {
-      type: Number,
-      required: true,
-    },
-
     modelValue: {
       type: Number,
       required: true,
@@ -39,6 +33,11 @@ export default {
     title: {
       type: String,
       default: "",
+    },
+
+    delta: {
+      type: Number,
+      default: 7,
     },
   },
 
@@ -58,9 +57,12 @@ export default {
         return this.modelValue;
       },
       set(v) {
-        // if (v > this.timeLimit) this.stopTimer();
         this.$emit("update:modelValue", v);
       },
+    },
+
+    lessThanOneDay() {
+      return this.timeLeft < Duration.fromObject({ days: 1 }).as("seconds");
     },
   },
 
@@ -77,10 +79,11 @@ export default {
   watch: {
     timePassed: {
       handler(v) {
-        let delta = this.weekday % 7;
-        if (delta === 0) delta = 1;
-        if (v >= this.timeLimit && v < this.timeDuration({ days: delta })) {
-          this.timePassed -= this.timeDuration({ days: delta });
+        if (
+          v >= this.timeLimit &&
+          v < this.timeDuration({ days: this.delta })
+        ) {
+          this.timePassed -= this.timeDuration({ days: this.delta });
         }
       },
     },
@@ -90,15 +93,6 @@ export default {
     runTimer() {
       if (this.timePassed > this.timeLimit) this.timePassed--;
       else this.timePassed++;
-    },
-
-    stopTimer() {
-      clearInterval(this.timerInterval);
-      // this.resetTimer();
-    },
-
-    resetTimer() {
-      this.timePassed = 0;
     },
 
     timeDuration(details) {

@@ -91,17 +91,17 @@ export default {
     colorCodes() {
       return {
         waiting: {
-          color: "cyan",
+          class: "not-started",
         },
         info: {
-          color: "green",
+          class: "pending",
         },
         warning: {
-          color: "orange",
+          class: "warning",
           threshold: this.warningThreshold,
         },
         alert: {
-          color: "red",
+          class: "alert",
           threshold: this.alertThreshold,
         },
       };
@@ -119,13 +119,13 @@ export default {
       const { alert, warning, info, waiting } = this.colorCodes;
 
       if (this.notStarted) {
-        return waiting.color;
+        return waiting.class;
       } else if (this.timeLeft <= alert.threshold) {
-        return alert.color;
+        return alert.class;
       } else if (this.timeLeft <= warning.threshold) {
-        return warning.color;
+        return warning.class;
       } else {
-        return info.color;
+        return info.class;
       }
     },
   },
@@ -153,20 +153,20 @@ export default {
     fill-rule: nonzero;
     stroke: currentColor;
 
-    &.green {
+    &.pending {
       color: rgb(65, 184, 131);
     }
 
-    &.orange {
+    &.warning {
       color: orange;
     }
 
-    &.red {
+    &.alert {
       color: red;
     }
 
-    &.cyan {
-      color: cyan;
+    &.not-started {
+      color: darkorchid;
     }
   }
 

@@ -22,19 +22,44 @@
   </header>
 
   <main>
-    <TheEvents :iso-date-time="isoDateTime" />
+    <div id="daily-event">
+      <h1 class="green">Daily</h1>
+      <EventItem
+        v-model="dailyEvent.passed"
+        :time-limit="dailyEvent.duration"
+        :title="dailyEvent.timedLabel"
+        :delta="1"
+      />
+    </div>
+
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="mondayEvents"
+      :weekday="1"
+    />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="tuesdayEvents"
+      :weekday="2"
+    />
   </main>
 </template>
 
 <script>
 import GreetingsHeader from "./components/GreetingsHeader.vue";
-import TheEvents from "./components/TheEvents.vue";
+import WeekdayEvents from "./components/WeekdayEvents.vue";
+import EventItem from "./components/EventItem.vue";
 import { DateTime } from "luxon";
+
+import * as common from "./mixins/common";
+import mondayEventsData from "./mixins/monday";
+import tuesdayEventsData from "./mixins/tuesday";
 
 export default {
   components: {
     GreetingsHeader,
-    TheEvents,
+    WeekdayEvents,
+    EventItem,
   },
 
   data() {
@@ -52,6 +77,18 @@ export default {
 
     isoTime() {
       return this.isoDateTime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+    },
+
+    mondayEvents() {
+      return mondayEventsData();
+    },
+
+    tuesdayEvents() {
+      return tuesdayEventsData();
+    },
+
+    dailyEvent() {
+      return common.events.dailyReset;
     },
   },
 
@@ -76,6 +113,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#daily-event h1 {
+  text-align: center;
+}
+
 header {
   line-height: 1.5;
   display: flex;
