@@ -3,7 +3,7 @@
     <h1 class="green">{{ weekdayLabel }}</h1>
 
     <div v-if="processing" class="loader"></div>
-    <div v-else>
+    <div v-show="!processing">
       <EventItem
         v-for="event of eventsOrdered"
         :key="event.order"
