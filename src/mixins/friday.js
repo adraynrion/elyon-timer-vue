@@ -1,6 +1,6 @@
 import * as common from "./common";
 
-const WEEKDAY = 1;
+const WEEKDAY = 5;
 
 export default () => {
   return [

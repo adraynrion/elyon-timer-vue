@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="green">{{ weekdayLabel }}</h1>
+    <h1 class="text-success">{{ weekdayLabel }}</h1>
 
     <div v-if="processing" class="loader"></div>
     <div v-show="!processing">

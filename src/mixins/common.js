@@ -17,11 +17,16 @@ export const genEvent = ({
   endHours,
   startMinutes,
   endMinutes,
-  startPlus = {},
+  weekday = 0,
   deltaDuration,
   duration,
   label,
 }) => {
+  let startPlus = {};
+  if (weekday) {
+    startPlus = { days: weekday - isoDateTime.weekday };
+  }
+
   return {
     startHours,
     endHours,

@@ -6,7 +6,7 @@
       class="event-timer"
     />
 
-    <p class="event-title green">{{ title }}</p>
+    <p class="event-title text-warning">{{ title }}</p>
   </div>
 </template>
 
@@ -70,10 +70,6 @@ export default {
     this.timerInterval = setInterval(() => {
       this.runTimer();
     }, 1000);
-  },
-
-  beforeUnmount() {
-    this.stopTimer();
   },
 
   watch: {

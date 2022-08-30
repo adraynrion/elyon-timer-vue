@@ -23,7 +23,7 @@
 
   <main>
     <div id="daily-event">
-      <h1 class="green">Daily</h1>
+      <h1 class="text-danger"><u>Daily</u></h1>
       <EventItem
         v-model="dailyEvent.passed"
         :time-limit="dailyEvent.duration"
@@ -42,6 +42,31 @@
       :events-data="tuesdayEvents"
       :weekday="2"
     />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="wednesdayEvents"
+      :weekday="3"
+    />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="thursdayEvents"
+      :weekday="4"
+    />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="fridayEvents"
+      :weekday="5"
+    />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="saturdayEvents"
+      :weekday="6"
+    />
+    <WeekdayEvents
+      :iso-date-time="isoDateTime"
+      :events-data="sundayEvents"
+      :weekday="7"
+    />
   </main>
 </template>
 
@@ -54,6 +79,11 @@ import { DateTime } from "luxon";
 import * as common from "./mixins/common";
 import mondayEventsData from "./mixins/monday";
 import tuesdayEventsData from "./mixins/tuesday";
+import wednesdayEventsData from "./mixins/wednesday";
+import thursdayEventsData from "./mixins/thursday";
+import fridayEventsData from "./mixins/friday";
+import saturdayEventsData from "./mixins/saturday";
+import sundayEventsData from "./mixins/sunday";
 
 export default {
   components: {
@@ -72,7 +102,7 @@ export default {
 
   computed: {
     isoDate() {
-      return this.isoDateTime.toLocaleString(DateTime.DATE_MED);
+      return this.isoDateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
     },
 
     isoTime() {
@@ -85,6 +115,26 @@ export default {
 
     tuesdayEvents() {
       return tuesdayEventsData();
+    },
+
+    wednesdayEvents() {
+      return wednesdayEventsData();
+    },
+
+    thursdayEvents() {
+      return thursdayEventsData();
+    },
+
+    fridayEvents() {
+      return fridayEventsData();
+    },
+
+    saturdayEvents() {
+      return saturdayEventsData();
+    },
+
+    sundayEvents() {
+      return sundayEventsData();
     },
 
     dailyEvent() {
