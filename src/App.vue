@@ -23,7 +23,6 @@
 
   <main>
     <section id="daily-event">
-      <h1 class="text-danger"><u>Daily</u></h1>
       <EventItem
         v-model="dailyEvent.passed"
         :time-limit="dailyEvent.duration"
@@ -33,39 +32,11 @@
     </section>
 
     <WeekdayEvents
+      v-for="day of weekdays"
+      :key="day"
       :iso-date-time="isoDateTime"
-      :events-data="mondayEvents"
-      :weekday="1"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="tuesdayEvents"
-      :weekday="2"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="wednesdayEvents"
-      :weekday="3"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="thursdayEvents"
-      :weekday="4"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="fridayEvents"
-      :weekday="5"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="saturdayEvents"
-      :weekday="6"
-    />
-    <WeekdayEvents
-      :iso-date-time="isoDateTime"
-      :events-data="sundayEvents"
-      :weekday="7"
+      :events-data="eventsOrdered(day)"
+      :weekday="day"
     />
   </main>
 </template>
@@ -94,7 +65,11 @@ export default {
 
   data() {
     return {
+      weekdays: [1, 2, 3, 4, 5, 6, 7],
       isoDateTime: DateTime.now()
+        .setZone(import.meta.env.VITE_CURRENT_ZONE)
+        .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
+      prevIsoDateTime: DateTime.now()
         .setZone(import.meta.env.VITE_CURRENT_ZONE)
         .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
     };
@@ -107,6 +82,14 @@ export default {
 
     isoTime() {
       return this.isoDateTime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+    },
+
+    isoSeconds() {
+      return Math.floor(this.isoDateTime.toSeconds());
+    },
+
+    prevIsoSeconds() {
+      return Math.floor(this.prevIsoDateTime.toSeconds());
     },
 
     mondayEvents() {
@@ -145,7 +128,7 @@ export default {
   mounted() {
     this.timerInterval = setInterval(() => {
       this.updateIsoDateTime();
-    }, 1000);
+    }, 200);
   },
 
   beforeUnmount() {
@@ -157,6 +140,74 @@ export default {
       this.isoDateTime = DateTime.now()
         .setZone(import.meta.env.VITE_CURRENT_ZONE)
         .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
+
+      if (this.prevIsoSeconds !== this.isoSeconds) this.runGlobalTimer();
+      this.prevIsoDateTime = this.isoDateTime;
+    },
+
+    getLocalizationTime(hStart, mStart, hEnd, mEnd) {
+      const dtStart = this.isoDateTime
+        .startOf("day")
+        .plus({ hours: hStart, minutes: mStart })
+        .toLocaleString(DateTime.TIME_SIMPLE);
+      const dtEnd = this.isoDateTime
+        .startOf("day")
+        .plus({ hours: hEnd, minutes: mEnd })
+        .toLocaleString(DateTime.TIME_SIMPLE);
+      return `${dtStart} - ${dtEnd}`;
+    },
+
+    eventsOrdered(weekday) {
+      let events = null;
+      switch (weekday) {
+        case 0:
+          events = [this.dailyEvent];
+          break;
+        case 1:
+          events = this.mondayEvents;
+          break;
+        case 2:
+          events = this.tuesdayEvents;
+          break;
+        case 3:
+          events = this.wednesdayEvents;
+          break;
+        case 4:
+          events = this.thursdayEvents;
+          break;
+        case 5:
+          events = this.fridayEvents;
+          break;
+        case 6:
+          events = this.saturdayEvents;
+          break;
+        case 7:
+          events = this.sundayEvents;
+          break;
+      }
+
+      let order = 0;
+      return events.map((e) => {
+        e.order = order++;
+
+        e.timedLabel = `${e.label} ${this.getLocalizationTime(
+          e.startHours,
+          e.startMinutes,
+          e.endHours,
+          e.endMinutes
+        )}`;
+
+        return e;
+      });
+    },
+
+    runGlobalTimer() {
+      for (let i = 0; i <= 7; i++) {
+        for (const event of this.eventsOrdered(i)) {
+          if (event.passed > event.duration) event.passed--;
+          else event.passed++;
+        }
+      }
     },
   },
 };
@@ -171,7 +222,7 @@ export default {
   text-align: center;
   align-self: center;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   #iso-date-time {
     width: 100%;
   }

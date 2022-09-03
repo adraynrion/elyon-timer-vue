@@ -34,7 +34,7 @@ h3 {
     text-align: left;
   }
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .greetings {
     h1,
     h3 {

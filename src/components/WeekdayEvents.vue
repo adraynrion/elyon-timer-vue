@@ -10,7 +10,7 @@
       <div v-if="processing" class="loader"></div>
       <div v-show="!processing">
         <EventItem
-          v-for="event of eventsOrdered"
+          v-for="event of events"
           :key="event.order"
           v-model="event.passed"
           :time-limit="event.duration"
@@ -24,7 +24,6 @@
 
 <script>
 import EventItem from "./EventItem.vue";
-import { DateTime } from "luxon";
 
 export default {
   components: {
@@ -53,26 +52,11 @@ export default {
       processing: true,
       visible: false,
       events: [],
+      timerInterval: null,
     };
   },
 
   computed: {
-    eventsOrdered() {
-      let order = 0;
-      return this.events.map((e) => {
-        e.order = order++;
-
-        e.timedLabel = `${e.label} ${this.getLocalizationTime(
-          e.startHours,
-          e.startMinutes,
-          e.endHours,
-          e.endMinutes
-        )}`;
-
-        return e;
-      });
-    },
-
     weekdayLabel() {
       switch (this.weekday) {
         case 1:
@@ -104,18 +88,6 @@ export default {
   },
 
   methods: {
-    getLocalizationTime(hStart, mStart, hEnd, mEnd) {
-      const dtStart = this.isoDateTime
-        .startOf("day")
-        .plus({ hours: hStart, minutes: mStart })
-        .toLocaleString(DateTime.TIME_SIMPLE);
-      const dtEnd = this.isoDateTime
-        .startOf("day")
-        .plus({ hours: hEnd, minutes: mEnd })
-        .toLocaleString(DateTime.TIME_SIMPLE);
-      return `${dtStart} - ${dtEnd}`;
-    },
-
     toggleVisibility() {
       this.visible = !this.visible;
     },

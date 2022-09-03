@@ -6,7 +6,9 @@
       class="event-timer"
     />
 
-    <p class="event-title text-beige">{{ title }}</p>
+    <p class="event-title" :class="textColor">
+      {{ title }}
+    </p>
   </div>
 </template>
 
@@ -46,12 +48,6 @@ export default {
     },
   },
 
-  data() {
-    return {
-      timerInterval: null,
-    };
-  },
-
   computed: {
     timeLeft() {
       return this.timeLimit - this.timePassed;
@@ -69,12 +65,10 @@ export default {
     lessThanOneDay() {
       return this.timeLeft < Duration.fromObject({ days: 1 }).as("seconds");
     },
-  },
 
-  mounted() {
-    this.timerInterval = setInterval(() => {
-      this.runTimer();
-    }, 1000);
+    textColor() {
+      return this.delta === 7 ? "text-beige" : "text-danger";
+    },
   },
 
   watch: {
@@ -91,11 +85,6 @@ export default {
   },
 
   methods: {
-    runTimer() {
-      if (this.timePassed > this.timeLimit) this.timePassed--;
-      else this.timePassed++;
-    },
-
     timeDuration(details) {
       return Duration.fromObject(details).as("seconds");
     },
@@ -105,12 +94,31 @@ export default {
 
 <style lang="scss" scoped>
 .event-content {
+  display: flex;
+
   .event-timer {
     margin: 0 auto;
   }
 
   .event-title {
     text-align: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .event-content {
+    flex-direction: row-reverse;
+    margin-bottom: 0.5rem;
+
+    .event-title {
+      align-self: center;
+      width: 50%;
+    }
+  }
+}
+@media (max-width: 1023px) {
+  .event-content {
+    flex-direction: column;
   }
 }
 </style>
