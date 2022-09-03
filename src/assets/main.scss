@@ -40,6 +40,19 @@ a,
 .text-dark {
   color: $dark !important;
 }
+.text-navy {
+  color: $navy !important;
+}
+.text-purple {
+  color: $purple !important;
+}
+.text-beige {
+  color: $beige !important;
+}
+
+.c-pointer {
+  cursor: pointer !important;
+}
 
 @media (hover: hover) {
   a:hover {

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1 class="text-success">{{ weekdayLabel }}</h1>
+    <h1 class="text-beige c-pointer" @click="toggleVisibility()">
+      <span>{{ weekdayLabel }}</span>
+    </h1>
 
     <div v-if="processing" class="loader"></div>
     <div v-show="!processing">
@@ -10,6 +12,7 @@
         v-model="event.passed"
         :time-limit="event.duration"
         :title="event.timedLabel"
+        :forceVisibility="visible"
       />
     </div>
   </div>
@@ -44,6 +47,7 @@ export default {
   data() {
     return {
       processing: true,
+      visible: false,
       events: [],
     };
   },
@@ -107,13 +111,40 @@ export default {
         .toLocaleString(DateTime.TIME_SIMPLE);
       return `${dtStart} - ${dtEnd}`;
     },
+
+    toggleVisibility() {
+      this.visible = !this.visible;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+@import "../assets/colors.scss";
+
 h1 {
   text-align: center;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    border-top: 2px solid $beige;
+    content: "";
+    margin: 0 auto; /* this centers the line to the full width specified */
+    position: absolute; /* positioning must be absolute here, and relative positioning must be applied to the parent */
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 95%;
+    z-index: -1;
+  }
+
+  span {
+    /* to hide the lines from behind the text, you have to set the background color the same as the container */
+    background: $black;
+    padding: 0 15px;
+  }
 }
 
 .loader {

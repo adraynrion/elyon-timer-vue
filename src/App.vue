@@ -10,7 +10,7 @@
 
     <div class="wrapper">
       <GreetingsHeader msg="Elyon Timer" />
-      <div id="iso-date-time">
+      <div id="iso-date-time" class="text-navy">
         <div id="iso-date">
           {{ isoDate }}
         </div>
@@ -165,6 +165,11 @@ export default {
 <style scoped lang="scss">
 #daily-event h1 {
   text-align: center;
+}
+
+#iso-date-time {
+  text-align: center;
+  margin-left: 1rem;
 }
 
 header {

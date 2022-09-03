@@ -1,12 +1,12 @@
 <template>
-  <div v-if="lessThanOneDay" class="event-content">
+  <div v-show="lessThanOneDay || forceVisibility" class="event-content">
     <EventTimer
       :time-left="timeLeft"
       :time-limit="timeLimit"
       class="event-timer"
     />
 
-    <p class="event-title text-warning">{{ title }}</p>
+    <p class="event-title text-beige">{{ title }}</p>
   </div>
 </template>
 
@@ -38,6 +38,11 @@ export default {
     delta: {
       type: Number,
       default: 7,
+    },
+
+    forceVisibility: {
+      type: Boolean,
+      default: false,
     },
   },
 
