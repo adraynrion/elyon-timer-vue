@@ -21,7 +21,7 @@
     </div>
   </header>
 
-  <main>
+  <main :key="keyComponents">
     <section id="daily-event">
       <EventItem
         v-model="dailyEvent.passed"
@@ -65,6 +65,10 @@ export default {
 
   data() {
     return {
+      hidden: undefined,
+      visibilityChange: undefined,
+
+      keyComponents: 0,
       weekdays: [1, 2, 3, 4, 5, 6, 7],
       isoDateTime: DateTime.now()
         .setZone(import.meta.env.VITE_CURRENT_ZONE)
@@ -129,10 +133,18 @@ export default {
     this.timerInterval = setInterval(() => {
       this.updateIsoDateTime();
     }, 200);
+
+    this.addDocumentVisibilitySupport();
   },
 
   beforeUnmount() {
     clearInterval(this.timerInterval);
+
+    document.removeEventListener(
+      this.visibilityChange,
+      this.handleVisibilityChange,
+      false
+    );
   },
 
   methods: {
@@ -207,6 +219,43 @@ export default {
           if (event.passed > event.duration) event.passed--;
           else event.passed++;
         }
+      }
+    },
+
+    handleVisibilityChange() {
+      if (!document[this.hidden]) {
+        this.keyComponents++;
+      }
+    },
+
+    addDocumentVisibilitySupport() {
+      // Set the name of the hidden property and the change event for visibility
+      if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+        this.hidden = "hidden";
+        this.visibilityChange = "visibilitychange";
+      } else if (typeof document.msHidden !== "undefined") {
+        this.hidden = "msHidden";
+        this.visibilityChange = "msvisibilitychange";
+      } else if (typeof document.webkitHidden !== "undefined") {
+        this.hidden = "webkitHidden";
+        this.visibilityChange = "webkitvisibilitychange";
+      }
+
+      // Warn if the browser doesn't support addEventListener or the Page Visibility API
+      if (
+        typeof document.addEventListener === "undefined" ||
+        this.hidden === undefined
+      ) {
+        console.log(
+          "This app requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API."
+        );
+      } else {
+        // Handle page visibility change
+        document.addEventListener(
+          this.visibilityChange,
+          this.handleVisibilityChange,
+          false
+        );
       }
     },
   },
