@@ -133,11 +133,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../assets/colors.scss";
+
 .base-timer {
-  /* Sets the containers height and width */
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
 
   &__path-remaining {
     /* Just as thick as the original ring */
@@ -154,19 +155,19 @@ export default {
     stroke: currentColor;
 
     &.pending {
-      color: rgb(65, 184, 131);
+      color: $green;
     }
 
     &.warning {
-      color: orange;
+      color: $warning;
     }
 
     &.alert {
-      color: red;
+      color: $red;
     }
 
     &.not-started {
-      color: darkorchid;
+      color: $purple;
     }
   }
 
@@ -178,16 +179,15 @@ export default {
   &__label {
     position: absolute;
     /* Size should match the parent container */
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     /* Keep the label aligned to the top */
     top: 0;
     /* Create a flexible box that centers content vertically and horizontally */
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Sort of an arbitrary number; adjust to your liking */
-    font-size: 48px;
+    font-size: 2.5rem;
   }
 
   /* Removes SVG styling that would hide the time label */
@@ -199,7 +199,7 @@ export default {
   /* The SVG path that displays the timer's progress */
   &__path-elapsed {
     stroke-width: 7px;
-    stroke: grey;
+    stroke: $gray-600;
   }
 }
 </style>

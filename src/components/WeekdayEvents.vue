@@ -1,21 +1,25 @@
 <template>
-  <div>
-    <h1 class="text-beige c-pointer" @click="toggleVisibility()">
-      <span>{{ weekdayLabel }}</span>
-    </h1>
+  <section>
+    <header>
+      <h1 class="text-beige c-pointer" @click="toggleVisibility()">
+        <span>{{ weekdayLabel }}</span>
+      </h1>
+    </header>
 
-    <div v-if="processing" class="loader"></div>
-    <div v-show="!processing">
-      <EventItem
-        v-for="event of eventsOrdered"
-        :key="event.order"
-        v-model="event.passed"
-        :time-limit="event.duration"
-        :title="event.timedLabel"
-        :forceVisibility="visible"
-      />
-    </div>
-  </div>
+    <main>
+      <div v-if="processing" class="loader"></div>
+      <div v-show="!processing">
+        <EventItem
+          v-for="event of eventsOrdered"
+          :key="event.order"
+          v-model="event.passed"
+          :time-limit="event.duration"
+          :title="event.timedLabel"
+          :forceVisibility="visible"
+        />
+      </div>
+    </main>
+  </section>
 </template>
 
 <script>
@@ -131,7 +135,7 @@ h1 {
     border-top: 2px solid $beige;
     content: "";
     margin: 0 auto; /* this centers the line to the full width specified */
-    position: absolute; /* positioning must be absolute here, and relative positioning must be applied to the parent */
+    position: absolute;
     top: 50%;
     left: 0;
     right: 0;

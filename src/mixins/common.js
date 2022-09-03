@@ -1,17 +1,42 @@
 import { DateTime, Duration } from "luxon";
 
+/**
+ * Contain DateTime.now() for Zone and Locale defined in .env
+ */
 export const isoDateTime = DateTime.now()
   .setZone(import.meta.env.VITE_CURRENT_ZONE)
   .setLocale(import.meta.env.VITE_CURRENT_LOCALE);
 
+/**
+ * @param {Object} end DateTime object used as source comparator
+ * @param {Object} start DateTime object used to compare to
+ * @param {Number} delta Number of seconds to reduce to diff
+ * @returns Number rounded of time passed with given arguments
+ */
 export const timePassed = (end, start, delta) => {
   return Math.floor(end.diff(start).as("seconds") - delta);
 };
 
+/**
+ * Convert Duration object given (details) to seconds
+ * @param {Object} details Object use within Duration
+ * @returns Number of second from given details
+ */
 export const timeDuration = (details) => {
   return Duration.fromObject(details).as("seconds");
 };
 
+/**
+ * @param {Number} startHours Hour start (24 basis)
+ * @param {Number} endHours Hour end (24 basis)
+ * @param {Number} startMinutes Minute start
+ * @param {Number} endMinutes Minute end
+ * @param {Number} weekday Day of the week (Monday = 1, Sunday = 7)
+ * @param {Number} deltaDuration Delta object to use in timePassed() calcul
+ * @param {Number} duration Object defining the duration of the event
+ * @param {Number} label Label of the event
+ * @returns Object
+ */
 export const genEvent = ({
   startHours,
   endHours,
@@ -60,6 +85,11 @@ export const events = {
   },
 };
 
+/**
+ * Get events of the week
+ * @param {Number} weekday Day of the week (Monday = 1, Sunday = 7)
+ * @returns Array
+ */
 export const weekEvents = (weekday) => {
   return [
     {
@@ -285,6 +315,11 @@ export const weekEvents = (weekday) => {
   ];
 };
 
+/**
+ * Get events of the weekend
+ * @param {Number} weekday Day of the week (Monday = 1, Sunday = 7)
+ * @returns Array
+ */
 export const weekendEvents = (weekday) => {
   return [
     {

@@ -22,7 +22,7 @@
   </header>
 
   <main>
-    <div id="daily-event">
+    <section id="daily-event">
       <h1 class="text-danger"><u>Daily</u></h1>
       <EventItem
         v-model="dailyEvent.passed"
@@ -30,7 +30,7 @@
         :title="dailyEvent.timedLabel"
         :delta="1"
       />
-    </div>
+    </section>
 
     <WeekdayEvents
       :iso-date-time="isoDateTime"
@@ -169,14 +169,18 @@ export default {
 
 #iso-date-time {
   text-align: center;
-  margin-left: 1rem;
+  align-self: center;
+}
+@media (max-width: 1024px) {
+  #iso-date-time {
+    width: 100%;
+  }
 }
 
 header {
   line-height: 1.5;
   display: flex;
   place-items: center;
-  padding-right: calc(var(--section-gap) / 2);
   justify-content: center;
 
   .wrapper {
@@ -192,6 +196,6 @@ header {
 }
 
 main {
-  width: 1000px;
+  max-width: 1000px;
 }
 </style>
