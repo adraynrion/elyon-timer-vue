@@ -2,6 +2,9 @@ import * as common from "./common";
 
 const WEEKDAY = 3;
 
-export default () => {
-  return common.weekEvents(WEEKDAY);
-};
+export default common.weekEvents(WEEKDAY);
+
+export const weekdayEvents = [
+  common.weekdaysEvents.transportShips,
+  common.weekdaysEvents.chaos,
+];

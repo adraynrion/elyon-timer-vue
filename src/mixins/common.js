@@ -271,6 +271,17 @@ export const weekEvents = (weekday) => {
     {
       ...genEvent({
         startHours: 20,
+        endHours: 0,
+        startMinutes: 0,
+        endMinutes: 0,
+        weekday,
+        duration: { hours: 4 },
+        label: "PvP Arena(3v3)",
+      }),
+    },
+    {
+      ...genEvent({
+        startHours: 20,
         endHours: 20,
         startMinutes: 10,
         endMinutes: 50,
@@ -501,6 +512,17 @@ export const weekendEvents = (weekday) => {
     {
       ...genEvent({
         startHours: 20,
+        endHours: 0,
+        startMinutes: 0,
+        endMinutes: 0,
+        weekday,
+        duration: { hours: 4 },
+        label: "PvP Arena(3v3)",
+      }),
+    },
+    {
+      ...genEvent({
+        startHours: 20,
         endHours: 21,
         startMinutes: 0,
         endMinutes: 0,
@@ -543,4 +565,12 @@ export const weekendEvents = (weekday) => {
       }),
     },
   ];
+};
+
+export const weekdaysEvents = {
+  beacons: "War beacons",
+  supplyBoxes: "Locked supply boxes",
+  transportShips: "Crashed transport ships",
+  underground: "Weekly dimension - Underground",
+  chaos: "Weekly dimension - Chaos",
 };

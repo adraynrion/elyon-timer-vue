@@ -22,6 +22,15 @@
   </header>
 
   <main :key="keyComponents">
+    <section id="weekday-events">
+      <h2>Events of the day</h2>
+      <ul>
+        <li v-for="[index, ev] of Object.entries(weekdayEvents)" :key="index">
+          {{ ev }}
+        </li>
+      </ul>
+    </section>
+
     <section id="daily-event">
       <EventItem
         v-model="dailyEvent.passed"
@@ -48,13 +57,27 @@ import EventItem from "./components/EventItem.vue";
 import { DateTime } from "luxon";
 
 import * as common from "./mixins/common";
-import mondayEventsData from "./mixins/monday";
-import tuesdayEventsData from "./mixins/tuesday";
-import wednesdayEventsData from "./mixins/wednesday";
-import thursdayEventsData from "./mixins/thursday";
-import fridayEventsData from "./mixins/friday";
-import saturdayEventsData from "./mixins/saturday";
-import sundayEventsData from "./mixins/sunday";
+import mondayEventsData, {
+  weekdayEvents as mondayEvents,
+} from "./mixins/monday";
+import tuesdayEventsData, {
+  weekdayEvents as tuesdayEvents,
+} from "./mixins/tuesday";
+import wednesdayEventsData, {
+  weekdayEvents as wednesdayEvents,
+} from "./mixins/wednesday";
+import thursdayEventsData, {
+  weekdayEvents as thursdayEvents,
+} from "./mixins/thursday";
+import fridayEventsData, {
+  weekdayEvents as fridayEvents,
+} from "./mixins/friday";
+import saturdayEventsData, {
+  weekdayEvents as saturdayEvents,
+} from "./mixins/saturday";
+import sundayEventsData, {
+  weekdayEvents as sundayEvents,
+} from "./mixins/sunday";
 
 export default {
   components: {
@@ -69,7 +92,6 @@ export default {
       visibilityChange: undefined,
 
       keyComponents: 0,
-      weekdays: [1, 2, 3, 4, 5, 6, 7],
       isoDateTime: DateTime.now()
         .setZone(import.meta.env.VITE_CURRENT_ZONE)
         .setLocale(import.meta.env.VITE_CURRENT_LOCALE),
@@ -96,36 +118,49 @@ export default {
       return Math.floor(this.prevIsoDateTime.toSeconds());
     },
 
-    mondayEvents() {
-      return mondayEventsData();
-    },
-
-    tuesdayEvents() {
-      return tuesdayEventsData();
-    },
-
-    wednesdayEvents() {
-      return wednesdayEventsData();
-    },
-
-    thursdayEvents() {
-      return thursdayEventsData();
-    },
-
-    fridayEvents() {
-      return fridayEventsData();
-    },
-
-    saturdayEvents() {
-      return saturdayEventsData();
-    },
-
-    sundayEvents() {
-      return sundayEventsData();
-    },
-
     dailyEvent() {
       return common.events.dailyReset;
+    },
+
+    weekdays() {
+      const day = this.isoDateTime.weekday;
+
+      return [1, 2, 3, 4, 5, 6, 7]
+        .sort((a, n) => {
+          if (a < day) {
+            if (a < n) return 1;
+            else if (a > n) return -1;
+          } else if (a >= day) return 0;
+          else return -1;
+        })
+        .sort((a, n) => {
+          if (a < day) {
+            if (a < n) return -1;
+            else if (a > n) return 1;
+          } else if (a >= day) return 0;
+          else return -1;
+        });
+    },
+
+    weekdayEvents() {
+      switch (this.isoDateTime.weekday) {
+        case 1:
+          return mondayEvents;
+        case 2:
+          return tuesdayEvents;
+        case 3:
+          return wednesdayEvents;
+        case 4:
+          return thursdayEvents;
+        case 5:
+          return fridayEvents;
+        case 6:
+          return saturdayEvents;
+        case 7:
+          return sundayEvents;
+        default:
+          return [];
+      }
     },
   },
 
@@ -176,25 +211,25 @@ export default {
           events = [this.dailyEvent];
           break;
         case 1:
-          events = this.mondayEvents;
+          events = mondayEventsData;
           break;
         case 2:
-          events = this.tuesdayEvents;
+          events = tuesdayEventsData;
           break;
         case 3:
-          events = this.wednesdayEvents;
+          events = wednesdayEventsData;
           break;
         case 4:
-          events = this.thursdayEvents;
+          events = thursdayEventsData;
           break;
         case 5:
-          events = this.fridayEvents;
+          events = fridayEventsData;
           break;
         case 6:
-          events = this.saturdayEvents;
+          events = saturdayEventsData;
           break;
         case 7:
-          events = this.sundayEvents;
+          events = sundayEventsData;
           break;
       }
 
@@ -230,7 +265,8 @@ export default {
 
     addDocumentVisibilitySupport() {
       // Set the name of the hidden property and the change event for visibility
-      if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+      if (typeof document.hidden !== "undefined") {
+        // Opera 12.10 and Firefox 18 and later support
         this.hidden = "hidden";
         this.visibilityChange = "visibilitychange";
       } else if (typeof document.msHidden !== "undefined") {
@@ -263,8 +299,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#daily-event h1 {
-  text-align: center;
+@import "./assets/colors.scss";
+
+#weekday-events {
+  margin: 1rem;
+  border: 1px dotted $beige;
+
+  h2 {
+    text-align: center;
+  }
 }
 
 #iso-date-time {
