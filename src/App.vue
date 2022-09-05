@@ -48,6 +48,18 @@
       :weekday="day"
     />
   </main>
+
+  <footer>
+    <p>
+      Data source based on in-game experience, friends knowledge and
+      <a
+        href="https://docs.google.com/spreadsheets/d/172kxgUaHb5bTrQPma31SrPItMfHX3EXUDEnxaDN4KbM/edit#gid=1455474602"
+        rel="noopener"
+      >
+        this spreadsheet
+      </a>
+    </p>
+  </footer>
 </template>
 
 <script>
@@ -340,5 +352,14 @@ header {
 
 main {
   max-width: 1000px;
+}
+
+footer {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  p {
+    text-align: center;
+  }
 }
 </style>
