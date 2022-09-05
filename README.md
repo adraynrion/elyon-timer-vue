@@ -1,10 +1,10 @@
 # elyon-timer-vue
 
-This template should help get you started developing with Vue 3 in Vite.
+This application will help you set up a list of events, based on the day of the week. This specific version of the application is based on the game [Elyon](https://elyon.playkakaogames.com/).
 
 ## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+[VSCode](https://code.visualstudio.com/).
 
 ## Customize configuration
 
